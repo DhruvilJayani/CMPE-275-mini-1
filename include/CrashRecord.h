@@ -3,10 +3,12 @@
 
 #include <string>
 #include <vector>
+#include <string_view>
+
 
 class CrashRecord {
 public:
-    CrashRecord(const std::vector<std::string>& data);
+    CrashRecord(const std::vector<std::string_view>& data);
     
     void printRecord() const;
 

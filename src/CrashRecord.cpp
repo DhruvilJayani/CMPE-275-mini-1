@@ -4,16 +4,29 @@
 #include <vector>
 #include <algorithm>
 #include <iomanip>
+#include <string_view>
 
-CrashRecord::CrashRecord(const std::vector<std::string>& data) {
-    crashDate = data[0];  // Crash date
-    crashTime = data[1];  // Crash time
-    borough = data[2];    // Borough
-    //zipCode = data[3].empty() ? 0 : std::stoi(data[3]);
-    latitude = data[4].empty() ? 0.0f : std::stof(data[4]);
-    longitude = data[5].empty() ? 0.0f : std::stof(data[5]);
-    onStreetName = data[7];  // Street name
-    numberOfPersonsInjured = data[10].empty() ? 0 : std::stoi(data[10]);
+CrashRecord::CrashRecord(const std::vector<std::string_view>& data) {
+    crashDate = data[0];  
+    crashTime = data[1];  
+    borough = data[2];
+    
+    // Handling latitude and longitude conversion safely
+    latitude = data[4].empty() ? 0.0f : std::stof(std::string(data[4]));  // Convert string_view to string before parsing
+    longitude = data[5].empty() ? 0.0f : std::stof(std::string(data[5]));
+
+    onStreetName = data[7];  
+    
+    // Safe conversion for number of persons injured
+    try {
+        numberOfPersonsInjured = data[10].empty() ? 0 : std::stoi(std::string(data[10]));  // Convert string_view to string
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid argument for number of persons injured: " << data[10] << ", setting to 0." << std::endl;
+        numberOfPersonsInjured = 0;
+    } catch (const std::out_of_range& e) {
+        std::cerr << "Out of range value for number of persons injured: " << data[10] << ", setting to 0." << std::endl;
+        numberOfPersonsInjured = 0;
+    }
 }
 
 
