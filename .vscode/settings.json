@@ -74,6 +74,7 @@
         "format": "cpp",
         "stop_token": "cpp",
         "text_encoding": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "__config": "cpp"
     }
 }

@@ -3,6 +3,11 @@ project(CrashDataProcessor)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(CrashDataProcessor src/main.cpp src/CrashRecord.cpp)
+add_executable(CrashDataProcessor
+    src/main.cpp
+    src/CrashRecord.cpp
+    src/CSVDataReader.cpp
+    src/CrashDataFacade.cpp
+)

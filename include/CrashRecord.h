@@ -5,17 +5,17 @@
 #include <vector>
 #include <string_view>
 
-
 class CrashRecord {
 public:
-    CrashRecord(const std::vector<std::string_view>& data);
-    
+    // Constructs a CrashRecord from a vector of string_views.
+    CrashRecord(const std::vector<std::string>& data);
+
     void printRecord() const;
 
     // Getters for search operations
     std::string getBorough() const;
     int getPersonsInjured() const;
-    std::string getCrashDate() const;  // Add this getter for the Date Range search
+    std::string getCrashDate() const;
 
 private:
     std::string crashDate;
@@ -27,10 +27,5 @@ private:
     std::string onStreetName;
     int numberOfPersonsInjured;
 };
-
-// Function declarations for searching records
-std::vector<CrashRecord> searchByBorough(const std::vector<CrashRecord>& records, const std::string& borough);
-std::vector<CrashRecord> searchByDateRange(const std::vector<CrashRecord>& records, const std::string& startDate, const std::string& endDate);
-std::vector<CrashRecord> searchByInjuryCount(const std::vector<CrashRecord>& records, int minInjuryCount);
 
 #endif // CRASHRECORD_H
