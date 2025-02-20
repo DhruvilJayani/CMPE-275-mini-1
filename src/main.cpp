@@ -51,7 +51,7 @@ std::vector<CrashRecord> readData(const std::string& filename) {
 }
 
 int main() {
-    std::vector<CrashRecord> records = readData("/Users/saisujithvalluru/Desktop/class-projects/mini-1.csv");
+    std::vector<CrashRecord> records = readData("/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv");
 
     // // Example usage of search functions:
      std::vector<CrashRecord> boroughResults = searchByBorough(records, "BROOKLYN");
@@ -95,3 +95,5 @@ int main() {
 // cmake ..
 // make
 // time ./CrashDataProcessor
+
+//Dhruvil - readData("/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv");]
