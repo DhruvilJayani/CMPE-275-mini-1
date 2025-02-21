@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <omp.h>
 
 std::vector<std::string_view> CSVDataReader::split(std::string_view line, char delimiter) {
     std::vector<std::string_view> tokens;
@@ -62,23 +63,26 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
     std::string line;
     std::getline(file, line); // Skip header
 
-    int count = 0;
-    int rowsPrinted = 0;
-
+    std::vector<std::string> lines;
     while (std::getline(file, line)) {
-        std::vector<std::string> data = parseCSVLine(line);
-        records.emplace_back(data);
-        ++count;
+        lines.push_back(line);
+    }
 
-        // Print the first 5 rows with column numbers
-        // if (rowsPrinted < 5) {
-        //     std::cout << "Row " << rowsPrinted + 1 << ": ";
-        //     for (size_t i = 0; i < data.size(); ++i) {
-        //         std::cout << "Column " << (i + 1) << ": " << data[i] << " | ";
-        //     }
-        //     std::cout << std::endl;
-        //     ++rowsPrinted;
-        // }
+    // Resize the vector to hold the correct number of records
+    records.reserve(lines.size()); // Reserve memory, but don't initialize yet
+
+    // Parallelize the loop that processes the lines
+    omp_set_num_threads(3);
+    #pragma omp parallel for
+    for (size_t i = 0; i < lines.size(); ++i) {
+        std::vector<std::string> data = parseCSVLine(lines[i]);
+        CrashRecord record(data);  // Create a new CrashRecord using the parsed data
+
+        // Use a critical section to assign the record back to the correct index
+        #pragma omp critical
+        {
+            records.push_back(record);  // Instead of resizing, we use push_back
+        }
     }
 
     file.close();
