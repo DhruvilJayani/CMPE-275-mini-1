@@ -24,10 +24,6 @@ int main() {
     std::cout << "Records with 10+ injuries: " << injuryRecords.size() << std::endl;
     // std::cout << "Records within date range: " << dateRangeRecords.size() << std::endl;
 
-    // Optionally, print the first record for verification
-    if (!brooklynRecords.empty()) {
-        brooklynRecords.front().printRecord();
-    }
 
     return 0;
 }

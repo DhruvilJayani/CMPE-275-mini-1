@@ -10,10 +10,6 @@ CrashRecord::CrashRecord(const std::vector<std::string>& data) {
     crashDate = std::string(data[0]);
     crashTime = std::string(data[1]);
     borough   = std::string(data[2]);
-    
-    // For simplicity, skipping zipCode (data[3]) conversion; add as needed.
-    // latitude  = data[5].empty() ? 0.0f : std::stof(std::string(data[5]));
-    // longitude = data[6].empty() ? 0.0f : std::stof(std::string(data[6]));
     onStreetName = std::string(data[7]);
     
     try {

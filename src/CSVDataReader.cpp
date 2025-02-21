@@ -18,74 +18,6 @@ std::vector<std::string_view> CSVDataReader::split(std::string_view line, char d
     return tokens;
 }
 
-// std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
-//     std::vector<CrashRecord> records;
-//     std::ifstream file(filename);
-//     if (!file.is_open()) {
-//         std::cerr << "Error opening file: " << filename << std::endl;
-//         return records;
-//     }
-
-//     std::string line;
-//     // Skip header line
-//     std::getline(file, line);
-    
-//     int count = 0;
-//     int rowsPrinted = 0;
-
-//     while (std::getline(file, line)) {
-//         std::vector<std::string_view> data = split(line, ',');
-//         records.emplace_back(data);
-//         ++count;
-
-//         // Print the top 5 rows and their column numbers
-//         if (rowsPrinted < 5) {
-//             std::cout << "Row " << rowsPrinted + 1 << ": ";
-//             for (int i = 0; i < data.size(); ++i) {
-//                 std::cout << "Column " << (i + 1) << ": " << data[i] << " | ";
-//             }
-//             std::cout << std::endl;
-//             ++rowsPrinted;
-//         }
-//     }
-//     file.close();
-//     return records;
-// }
-
-// std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
-//     std::vector<CrashRecord> records;
-//     std::ifstream file(filename);
-//     if (!file.is_open()) {
-//         std::cerr << "Error opening file: " << filename << std::endl;
-//         return records;
-//     }
-
-//     std::string line;
-//     // Skip header line
-//     std::getline(file, line);
-    
-//     int count = 0;
-//     int rowsPrinted = 0;
-
-//     while (std::getline(file, line)) {
-//         std::vector<std::string_view> data = split(line, ',');
-//         records.emplace_back(data);
-//         ++count;
-
-//         // Print the top 5 rows and their column numbers
-//         if (rowsPrinted < 5) {
-//             std::cout << "Row " << rowsPrinted + 1 << ": ";
-//             for (int i = 0; i < data.size(); ++i) {
-//                 std::cout << "Column " << (i + 1) << ": " << data[i] << " | ";
-//             }
-//             std::cout << std::endl;
-//             ++rowsPrinted;
-//         }
-//     }
-//     file.close();
-//     return records;
-// }
-
 std::vector<std::string> parseCSVLine(const std::string& line) {
     std::vector<std::string> result;
     std::string currentField;
@@ -139,14 +71,14 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
         ++count;
 
         // Print the first 5 rows with column numbers
-        if (rowsPrinted < 5) {
-            std::cout << "Row " << rowsPrinted + 1 << ": ";
-            for (size_t i = 0; i < data.size(); ++i) {
-                std::cout << "Column " << (i + 1) << ": " << data[i] << " | ";
-            }
-            std::cout << std::endl;
-            ++rowsPrinted;
-        }
+        // if (rowsPrinted < 5) {
+        //     std::cout << "Row " << rowsPrinted + 1 << ": ";
+        //     for (size_t i = 0; i < data.size(); ++i) {
+        //         std::cout << "Column " << (i + 1) << ": " << data[i] << " | ";
+        //     }
+        //     std::cout << std::endl;
+        //     ++rowsPrinted;
+        // }
     }
 
     file.close();
