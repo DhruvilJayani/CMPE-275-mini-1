@@ -39,23 +39,23 @@ int main() {
     std::vector<int> brooklynIndices;
     std::vector<int> injuryCount10Indices;
 
-    // Use OpenMP to allocate a thread for each function
-    // #pragma omp parallel sections
-    // {
-    //     #pragma omp section
-    //     {
-            // Search by borough "BROOKLYN"
+    //Use OpenMP to allocate a thread for each function
+    #pragma omp parallel sections
+    {
+        #pragma omp section
+        {
+            //Search by borough "BROOKLYN"
             brooklynIndices = crashData.searchByBorough("BROOKLYN");
-        //     std::cout << "Found " << brooklynIndices.size() << " records for borough 'BROOKLYN'." << std::endl;
-        // }
+            std::cout << "Found " << brooklynIndices.size() << " records for borough 'BROOKLYN'." << std::endl;
+        }
 
-        // #pragma omp section
-        // {
-            // Search by number of persons injured = 10
+        #pragma omp section
+        {
+            //Search by number of persons injured = 10
             injuryCount10Indices = crashData.searchByInjuryCount(10);
             std::cout << "Found " << injuryCount10Indices.size() << " records with 10 persons injured." << std::endl;
-    //     }
-    // }
+        }
+    }
 
     return 0;
 }
