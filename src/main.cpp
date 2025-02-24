@@ -15,21 +15,21 @@ int main() {
 
 
     // //Reading Data Through array of Objects
-    if (!crashAPI.loadData(filename)) {
-        std::cerr << "Failed to load data from " << filename << std::endl;
-        return 1;
-    }
-    //  Perform searches via the API
-    auto startTime = std::chrono::high_resolution_clock::now();
-    auto brooklynRecords = crashAPI.searchByBorough("BROOKLYN");
-    auto injuryRecords  = crashAPI.searchByInjuryCount(10);
-    std::cout << "Records in BROOKLYN: " << brooklynRecords.size() << std::endl;
-    std::cout << "Records with injury count >= 10: " << injuryRecords.size() << std::endl;
-    auto endTime = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    // std::cout << "Search started at: " << std::chrono::duration_cast<std::chrono::milliseconds>(startTime.time_since_epoch()).count() << " ms\n";
-    // std::cout << "Search ended at: " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime.time_since_epoch()).count() << " ms\n";
-    std::cout << "Total time taken: " << duration.count() << " ms\n";
+    // if (!crashAPI.loadData(filename)) {
+    //     std::cerr << "Failed to load data from " << filename << std::endl;
+    //     return 1;
+    // }
+    // //  Perform searches via the API
+    // auto startTime = std::chrono::high_resolution_clock::now();
+    // auto brooklynRecords = crashAPI.searchByBorough("BROOKLYN");
+    // auto injuryRecords  = crashAPI.searchByInjuryCount(10);
+    // std::cout << "Records in BROOKLYN: " << brooklynRecords.size() << std::endl;
+    // std::cout << "Records with injury count >= 10: " << injuryRecords.size() << std::endl;
+    // auto endTime = std::chrono::high_resolution_clock::now();
+    // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    // // std::cout << "Search started at: " << std::chrono::duration_cast<std::chrono::milliseconds>(startTime.time_since_epoch()).count() << " ms\n";
+    // // std::cout << "Search ended at: " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime.time_since_epoch()).count() << " ms\n";
+    // std::cout << "Total time taken: " << duration.count() << " ms\n";
 
 
 
