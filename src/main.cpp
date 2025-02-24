@@ -72,4 +72,3 @@ int main() {
 
 // readData("/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv");
 // cmake -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ ..
-//157 ms
