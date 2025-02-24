@@ -6,6 +6,8 @@
 #include <vector>
 #include <omp.h>
 
+void parseCSVLineA(const std::string& line, std::vector<std::string>& fields);
+
 std::vector<std::string_view> CSVDataReader::split(std::string_view line, char delimiter) {
     std::vector<std::string_view> tokens;
     size_t start = 0;
@@ -93,37 +95,94 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
 
 CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
     CrashDataArrays crashDataArrays;
-    std::ifstream file(filename);
+    std::ifstream file(filename, std::ios::binary);
     
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
         return crashDataArrays;
     }
-
-    std::string line;
-    std::getline(file, line); // Skip header
-
+    
+    // Read entire file into memory
+    std::string content;
+    file.seekg(0, std::ios::end);
+    content.resize(file.tellg());
+    file.seekg(0, std::ios::beg);
+    file.read(&content[0], content.size());
+    file.close();
+    
+    // Split into lines efficiently
     std::vector<std::string> lines;
-    while (std::getline(file, line)) {
-        lines.push_back(line);
-    }
-
-    // Resize the vector to hold the correct number of records
-    lines.reserve(lines.size()); // No need for explicit reserve for crashDataArrays as it dynamically grows
-
-    // Parallelize the loop that processes the lines
-    // omp_set_num_threads(3);
-    // #pragma omp parallel for
-    for (size_t i = 0; i < lines.size(); ++i) {
-        std::vector<std::string> data = parseCSVLine(lines[i]);
-
-        // Create a new CrashDataArrays record using the parsed data
-        // #pragma omp critical
-        {
-            crashDataArrays.addRecord(data);  // Add record to the CrashDataArrays object
+    size_t start = 0, end = 0;
+    while (end < content.size()) {
+        if (content[end] == '\n' || content[end] == '\r') {
+            if (start < end) // Skip empty lines
+                lines.emplace_back(content.substr(start, end - start));
+            // Handle CRLF
+            if (content[end] == '\r' && end + 1 < content.size() && content[end+1] == '\n')
+                end += 2;
+            else
+                end += 1;
+            start = end;
+        } else {
+            end++;
         }
     }
-
-    file.close();
+    if (start < end) // Add last line
+        lines.emplace_back(content.substr(start, end - start));
+    
+    // Skip header
+    if (!lines.empty())
+        lines.erase(lines.begin());
+    
+    // Pre-size arrays for direct access
+    const size_t numRecords = lines.size();
+    crashDataArrays.resize(numRecords);
+    
+    // Parallel parse with no locks
+    #pragma omp parallel for
+    for (size_t i = 0; i < numRecords; ++i) {
+        thread_local std::vector<std::string> fields; // Reuse buffer
+        fields.clear();
+        parseCSVLineA(lines[i], fields); // Optimized parser
+        crashDataArrays.setRecord(i, fields);
+    }
+    
     return crashDataArrays;
+}
+
+// Optimized CSV Parser
+void parseCSVLineA(const std::string& line, std::vector<std::string>& fields) {
+    fields.clear();
+    fields.reserve(12); // Reserve for expected number of fields
+    
+    const char* start = line.data();
+    const char* end = line.data() + line.size();
+    const char* current = start;
+    
+    bool in_quotes = false;
+    bool in_parentheses = false;
+    char prev_char = 0;
+
+    while (current < end) {
+        if (*current == '"' && (current == start || prev_char != '\\')) {
+            in_quotes = !in_quotes;
+            prev_char = *current++;
+            continue;
+        }
+        
+        if (!in_quotes) {
+            if (*current == '(') in_parentheses = true;
+            if (*current == ')') in_parentheses = false;
+            
+            if (*current == ',' && !in_parentheses) {
+                fields.emplace_back(start, current - start);
+                start = current + 1;
+            }
+        }
+        
+        prev_char = *current++;
+    }
+    
+    // Add last field
+    fields.emplace_back(start, current - start);
 }

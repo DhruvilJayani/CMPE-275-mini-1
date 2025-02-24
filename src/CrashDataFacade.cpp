@@ -3,27 +3,7 @@
 #include <vector>
 #include <string>
 #include "CrashDataArrays.h"
-
-// void printTopRows(const std::vector<CrashRecord>& records) {
-//     int rowsToPrint = std::min(5, static_cast<int>(records.size()));
-
-//     for (int i = 0; i < rowsToPrint; ++i) {
-//         const CrashRecord& record = records[i];
-        
-//         std::cout << "Row " << i + 1 << ":\n";
-//         std::cout << "Column 0: " << record.getCrashDate() << " | ";
-//         // std::cout << "Column 1: " << record.getCrashTime() << " | ";
-//         std::cout << "Column 2: " << record.getBorough() << " | ";
-//         // std::cout << "Column 3: " << record.getZipCode() << " | ";
-//         // std::cout << "Column 4: " << record.getLatitude() << " | ";
-//         // std::cout << "Column 5: " << record.getLongitude() << " | ";
-//         // std::cout << "Column 6: " << record.getOnStreetName() << " | ";
-//          std::cout << "Column 10: " << record.getPersonsInjured() << " | ";
-//         std::cout << std::endl;
-//     }
-// }
-
-
+#include <omp.h>
 
 CrashDataFacade::CrashDataFacade(std::unique_ptr<IDataReader> reader)
     : dataReader(std::move(reader))
@@ -36,7 +16,13 @@ bool CrashDataFacade::loadData(const std::string& filename) {
 }
 
 bool CrashDataFacade::loadDataInArray(const std::string& filename, CrashDataArrays& crashData) {
-    crashData = dataReader->readDataInArray(filename);
+    #pragma omp parallel
+    {
+        #pragma omp single nowait
+        {
+            crashData = dataReader->readDataInArray(filename);
+        }
+    }
     return !crashData.crashDates.empty();
 }
 

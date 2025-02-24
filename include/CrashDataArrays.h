@@ -34,6 +34,52 @@ public:
         numberOfPersonsInjured.resize(size);
     }
 
+    void setRecord(size_t index, const std::vector<std::string>& data) {
+        crashDates[index] = data[0];
+        crashTimes[index] = data[1];
+        boroughs[index] = data[2];
+        
+        // // Parse numerical values directly with error checking
+        // zipCodes[index] = data[3].empty() ? 0 : fast_atoi(data[3]);
+        // latitudes[index] = data[4].empty() ? 0.0f : fast_atof(data[4]);
+        // longitudes[index] = data[5].empty() ? 0.0f : fast_atof(data[5]);
+        // onStreetNames[index] = data[6];
+        numberOfPersonsInjured[index] = data[10].empty() ? 0 : fast_atoi(data[10]);
+    }
+
+    static int fast_atoi(const std::string& str) {
+        int val = 0;
+        for (char c : str) {
+            if (c >= '0' && c <= '9') 
+                val = val * 10 + (c - '0');
+        }
+        return val;
+    }
+
+    // Fast float parsing (simple version)
+    static float fast_atof(const std::string& str) {
+        float result = 0.0f;
+        float sign = 1.0f;
+        float decimal = 0.1f;
+        bool found_dot = false;
+        
+        for (char c : str) {
+            if (c == '-') {
+                sign = -1.0f;
+            } else if (c == '.') {
+                found_dot = true;
+            } else if (c >= '0' && c <= '9') {
+                if (found_dot) {
+                    result += (c - '0') * decimal;
+                    decimal *= 0.1f;
+                } else {
+                    result = result * 10.0f + (c - '0');
+                }
+            }
+        }
+        return sign * result;
+    }
+
     void buildIndexes() {
         #pragma omp parallel
         {
