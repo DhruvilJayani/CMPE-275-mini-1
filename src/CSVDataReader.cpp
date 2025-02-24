@@ -72,7 +72,7 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
     records.reserve(lines.size()); // Reserve memory, but don't initialize yet
 
     // Parallelize the loop that processes the lines
-    omp_set_num_threads(3);
+    omp_set_num_threads(2);
     #pragma omp parallel for
     for (size_t i = 0; i < lines.size(); ++i) {
         std::vector<std::string> data = parseCSVLine(lines[i]);
@@ -87,4 +87,43 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
 
     file.close();
     return records;
+}
+
+
+
+CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
+    CrashDataArrays crashDataArrays;
+    std::ifstream file(filename);
+    
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return crashDataArrays;
+    }
+
+    std::string line;
+    std::getline(file, line); // Skip header
+
+    std::vector<std::string> lines;
+    while (std::getline(file, line)) {
+        lines.push_back(line);
+    }
+
+    // Resize the vector to hold the correct number of records
+    lines.reserve(lines.size()); // No need for explicit reserve for crashDataArrays as it dynamically grows
+
+    // Parallelize the loop that processes the lines
+    // omp_set_num_threads(3);
+    // #pragma omp parallel for
+    for (size_t i = 0; i < lines.size(); ++i) {
+        std::vector<std::string> data = parseCSVLine(lines[i]);
+
+        // Create a new CrashDataArrays record using the parsed data
+        // #pragma omp critical
+        {
+            crashDataArrays.addRecord(data);  // Add record to the CrashDataArrays object
+        }
+    }
+
+    file.close();
+    return crashDataArrays;
 }

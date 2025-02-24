@@ -6,6 +6,7 @@
 #include <string>
 #include "CrashRecord.h"
 #include "IDataReader.h"
+#include "CrashDataArrays.h"
 
 class CrashDataFacade {
 public:
@@ -14,6 +15,9 @@ public:
 
     // Load data from a file; returns true if successful.
     bool loadData(const std::string& filename);
+
+    //Load data in array
+    bool loadDataInArray(const std::string& filename, CrashDataArrays& crashData);
 
     // API for basic searching
     std::vector<CrashRecord> searchByBorough(const std::string& borough) const;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "CrashDataArrays.h"
 
 // void printTopRows(const std::vector<CrashRecord>& records) {
 //     int rowsToPrint = std::min(5, static_cast<int>(records.size()));
@@ -34,6 +35,12 @@ bool CrashDataFacade::loadData(const std::string& filename) {
     return !records.empty();
 }
 
+bool CrashDataFacade::loadDataInArray(const std::string& filename, CrashDataArrays& crashData) {
+    crashData = dataReader->readDataInArray(filename);
+    return !crashData.crashDates.empty();
+}
+
+
 std::vector<CrashRecord> CrashDataFacade::searchByBorough(const std::string& borough) const {
     std::vector<CrashRecord> results;
     for (const auto& record : records) {
@@ -56,7 +63,7 @@ std::vector<CrashRecord> CrashDataFacade::searchByDateRange(const std::string& s
 std::vector<CrashRecord> CrashDataFacade::searchByInjuryCount(int minInjuryCount) const {
     std::vector<CrashRecord> results;
     for (const auto& record : records) {
-        if (record.getPersonsInjured() >= minInjuryCount)
+        if (record.getPersonsInjured() == minInjuryCount)
             results.push_back(record);
     }
     return results;

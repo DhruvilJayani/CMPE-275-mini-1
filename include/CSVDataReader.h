@@ -9,6 +9,7 @@
 class CSVDataReader : public IDataReader {
 public:
     std::vector<CrashRecord> readData(const std::string& filename) override;
+    CrashDataArrays readDataInArray(const std::string& filename) override;  // Ensure this declaration exists
 
 private:
     // Helper function to split a CSV line using string_view (to avoid unnecessary copies)

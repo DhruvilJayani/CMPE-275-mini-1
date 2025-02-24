@@ -2,6 +2,7 @@
 #include <memory>
 #include "CrashDataFacade.h"
 #include "CSVDataReader.h"
+#include "CrashDataArrays.h"
 
 int main() {
     // Create a facade using the CSV data reader
@@ -10,20 +11,51 @@ int main() {
 
     // Load data from the CSV file
     std::string filename = "/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv";
-    if (!crashAPI.loadData(filename)) {
-        std::cerr << "Failed to load data from " << filename << std::endl;
-        return 1;
-    }
 
-    // Perform searches via the API
-    auto brooklynRecords = crashAPI.searchByBorough("BROOKLYN");
-    auto injuryRecords  = crashAPI.searchByInjuryCount(10);
-    // auto dateRangeRecords = crashAPI.searchByDateRange("2023-01-01", "2023-12-31");
+    // //Reading Data Through array of Objects
+    // if (!crashAPI.loadData(filename)) {
+    //     std::cerr << "Failed to load data from " << filename << std::endl;
+    //     return 1;
+    // }
 
-    std::cout << "Records in BROOKLYN: " << brooklynRecords.size() << std::endl;
-    std::cout << "Records with 10+ injuries: " << injuryRecords.size() << std::endl;
-    // std::cout << "Records within date range: " << dateRangeRecords.size() << std::endl;
+    // // // Perform searches via the API
+    // auto brooklynRecords = crashAPI.searchByBorough("BROOKLYN");
+    // auto injuryRecords  = crashAPI.searchByInjuryCount(10);
 
+    // std::cout << "Records in BROOKLYN: " << brooklynRecords.size() << std::endl;
+    // std::cout << "Records with 10+ injuries: " << injuryRecords.size() << std::endl;
+
+
+
+
+     //Loading data Through Objects of Array
+     CrashDataArrays crashData;
+     if (!crashAPI.loadDataInArray(filename, crashData)) {
+         std::cerr << "Failed to load data from " << filename << std::endl;
+         return 1;
+     }
+
+    // Declare variables to hold search results
+    std::vector<int> brooklynIndices;
+    std::vector<int> injuryCount10Indices;
+
+    // Use OpenMP to allocate a thread for each function
+    // #pragma omp parallel sections
+    // {
+    //     #pragma omp section
+    //     {
+            // Search by borough "BROOKLYN"
+            brooklynIndices = crashData.searchByBorough("BROOKLYN");
+        //     std::cout << "Found " << brooklynIndices.size() << " records for borough 'BROOKLYN'." << std::endl;
+        // }
+
+        // #pragma omp section
+        // {
+            // Search by number of persons injured = 10
+            injuryCount10Indices = crashData.searchByInjuryCount(10);
+            std::cout << "Found " << injuryCount10Indices.size() << " records with 10 persons injured." << std::endl;
+    //     }
+    // }
 
     return 0;
 }
