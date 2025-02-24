@@ -92,78 +92,38 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
 
 
 CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
-    CrashDataArrays crashData;
-    std::ifstream file(filename, std::ios::ate);
+    CrashDataArrays crashDataArrays;
+    std::ifstream file(filename);
     
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
-        return crashData;
+        return crashDataArrays;
     }
 
-    // Read entire file into memory
-    size_t fileSize = file.tellg();
-    file.seekg(0);
-    std::string buffer(fileSize, '\0');
-    file.read(&buffer[0], fileSize);
-    file.close();
+    std::string line;
+    std::getline(file, line); // Skip header
 
-    // Split into lines
     std::vector<std::string> lines;
-    size_t lineStart = 0;
-    while (lineStart < buffer.size()) {
-        size_t lineEnd = buffer.find('\n', lineStart);
-        if (lineEnd == std::string::npos) lineEnd = buffer.size();
-        
-        if (lineStart == 0) { // Skip header
-            lineStart = lineEnd + 1;
-            continue;
-        }
-        
-        lines.emplace_back(buffer.substr(lineStart, lineEnd - lineStart));
-        lineStart = lineEnd + 1;
+    while (std::getline(file, line)) {
+        lines.push_back(line);
     }
 
-    crashData.resize(lines.size());
+    // Resize the vector to hold the correct number of records
+    lines.reserve(lines.size()); // No need for explicit reserve for crashDataArrays as it dynamically grows
 
-    #pragma omp parallel for
+    // Parallelize the loop that processes the lines
+    // omp_set_num_threads(3);
+    // #pragma omp parallel for
     for (size_t i = 0; i < lines.size(); ++i) {
-        const auto& line = lines[i];
-        size_t fieldStart = 0;
-        int fieldIndex = 0;
-        bool inQuotes = false;
+        std::vector<std::string> data = parseCSVLine(lines[i]);
 
-        // Fast CSV parsing
-        for (size_t pos = 0; pos <= line.size(); ++pos) {
-            if (pos == line.size() || (line[pos] == ',' && !inQuotes)) {
-                std::string field = line.substr(fieldStart, pos - fieldStart);
-                
-                // Remove surrounding quotes
-                if (field.size() >= 2 && field.front() == '"' && field.back() == '"') {
-                    field = field.substr(1, field.size() - 2);
-                }
-
-                switch (fieldIndex) {
-                    case 0: crashData.crashDates[i] = std::move(field); break;
-                    case 1: crashData.crashTimes[i] = std::move(field); break;
-                    case 2: crashData.boroughs[i] = std::move(field); break;
-                    case 10: 
-                        try {
-                            crashData.numberOfPersonsInjured[i] = field.empty() ? 0 : std::stoi(field);
-                        } catch (...) {
-                            crashData.numberOfPersonsInjured[i] = 0;
-                        }
-                        break;
-                    // Add other fields as needed
-                }
-                
-                fieldStart = pos + 1;
-                fieldIndex++;
-            } else if (line[pos] == '"') {
-                inQuotes = !inQuotes;
-            }
+        // Create a new CrashDataArrays record using the parsed data
+        // #pragma omp critical
+        {
+            crashDataArrays.addRecord(data);  // Add record to the CrashDataArrays object
         }
     }
 
-    crashData.buildIndexes();
-    return crashData;
+    file.close();
+    return crashDataArrays;
 }

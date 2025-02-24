@@ -86,21 +86,34 @@ public:
         }
         
         // Update indexes for fast lookup:
-        boroughIndex[boroughs[index]].push_back(index);
-        injuryCountIndex[numberOfPersonsInjured[index]].push_back(index);
+        // boroughIndex[boroughs[index]].push_back(index);
+        // injuryCountIndex[numberOfPersonsInjured[index]].push_back(index);
     }
 
     // Fast search functions that simply return precomputed indices
 
     std::vector<int> searchByBorough(const std::string& targetBorough) {
-        // If not found, returns an empty vector.
-        auto it = boroughIndex.find(targetBorough);
-        return (it != boroughIndex.end()) ? it->second : std::vector<int>{};
+        std::vector<int> indices;
+        
+        for (size_t i = 0; i < boroughs.size(); ++i) {
+            if (boroughs[i] == targetBorough) {
+                indices.push_back(i);
+            }
+        }
+        
+        return indices;
     }
 
     std::vector<int> searchByInjuryCount(int targetInjuryCount) {
-        auto it = injuryCountIndex.find(targetInjuryCount);
-        return (it != injuryCountIndex.end()) ? it->second : std::vector<int>{};
+        std::vector<int> indices;
+    
+        for (size_t i = 0; i < numberOfPersonsInjured.size(); ++i) {
+            if (numberOfPersonsInjured[i] == targetInjuryCount) {
+                indices.push_back(i);
+            }
+        }
+    
+        return indices;
     }
 };
 
