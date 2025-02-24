@@ -80,8 +80,7 @@ public:
         try {
             numberOfPersonsInjured.push_back(data[10].empty() ? 0 : std::stoi(data[10]));
         } catch (const std::exception& e) {
-            std::cerr << "Error parsing injury count (" << data[10] << "): " 
-                      << e.what() << ". Setting to 0." << std::endl;
+            // std::cerr << "Error parsing injury count (" << data[10] << "): " << e.what() << ". Setting to 0." << std::endl;
             numberOfPersonsInjured.push_back(0);
         }
         
