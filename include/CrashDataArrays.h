@@ -39,11 +39,7 @@ public:
         crashTimes[index] = data[1];
         boroughs[index] = data[2];
         
-        // // Parse numerical values directly with error checking
-        // zipCodes[index] = data[3].empty() ? 0 : fast_atoi(data[3]);
-        // latitudes[index] = data[4].empty() ? 0.0f : fast_atof(data[4]);
-        // longitudes[index] = data[5].empty() ? 0.0f : fast_atof(data[5]);
-        // onStreetNames[index] = data[6];
+        
         numberOfPersonsInjured[index] = data[10].empty() ? 0 : fast_atoi(data[10]);
     }
 
@@ -110,32 +106,21 @@ public:
     
   
 
-    // Update the data arrays and the indexes in one go.
     void addRecord(const std::vector<std::string>& data) {
         int index = crashDates.size();  // current index before pushing new data
         
         crashDates.push_back(data[0].empty() ? "" : data[0]);
         crashTimes.push_back(data[1].empty() ? "" : data[1]);
         boroughs.push_back(data[2].empty() ? "" : data[2]);
-        // Example: Uncomment and update other fields as needed.
-        // zipCodes.push_back(data[3].empty() ? 0 : std::stoi(data[3]));
-        // latitudes.push_back(data[4].empty() ? 0.0f : std::stof(data[4]));
-        // longitudes.push_back(data[5].empty() ? 0.0f : std::stof(data[5]));
-        // onStreetNames.push_back(data[6].empty() ? "" : data[6]);
+    
 
         try {
             numberOfPersonsInjured.push_back(data[10].empty() ? 0 : std::stoi(data[10]));
         } catch (const std::exception& e) {
-            // std::cerr << "Error parsing injury count (" << data[10] << "): " << e.what() << ". Setting to 0." << std::endl;
             numberOfPersonsInjured.push_back(0);
         }
         
-        // Update indexes for fast lookup:
-        // boroughIndex[boroughs[index]].push_back(index);
-        // injuryCountIndex[numberOfPersonsInjured[index]].push_back(index);
     }
-
-    // Fast search functions that simply return precomputed indices
 
     std::vector<int> searchByBorough(const std::string& targetBorough) {
         std::vector<int> indices;
@@ -162,4 +147,4 @@ public:
     }
 };
 
-#endif // CRASHDATAARRAYS_H
+#endif 
