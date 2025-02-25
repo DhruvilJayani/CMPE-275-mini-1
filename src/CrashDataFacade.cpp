@@ -11,7 +11,6 @@ CrashDataFacade::CrashDataFacade(std::unique_ptr<IDataReader> reader)
 
 bool CrashDataFacade::loadData(const std::string& filename) {
     records = dataReader->readData(filename);
-    // printTopRows(records);
     return !records.empty();
 }
 

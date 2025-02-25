@@ -14,12 +14,11 @@ int main() {
     std::string filename = "/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv";
 
 
-    // //Reading Data Through array of Objects
+    // Reading Data Through array of Objects
     // if (!crashAPI.loadData(filename)) {
     //     std::cerr << "Failed to load data from " << filename << std::endl;
     //     return 1;
     // }
-    // //  Perform searches via the API
     // auto startTime = std::chrono::high_resolution_clock::now();
     // auto brooklynRecords = crashAPI.searchByBorough("BROOKLYN");
     // auto injuryRecords  = crashAPI.searchByInjuryCount(10);
@@ -27,8 +26,6 @@ int main() {
     // std::cout << "Records with injury count >= 10: " << injuryRecords.size() << std::endl;
     // auto endTime = std::chrono::high_resolution_clock::now();
     // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    // // std::cout << "Search started at: " << std::chrono::duration_cast<std::chrono::milliseconds>(startTime.time_since_epoch()).count() << " ms\n";
-    // // std::cout << "Search ended at: " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime.time_since_epoch()).count() << " ms\n";
     // std::cout << "Total time taken: " << duration.count() << " ms\n";
 
 
@@ -40,10 +37,8 @@ int main() {
         std::cerr << "Failed to load data from " << filename << std::endl;
         return 1;
     }
-    // Declare variables to hold search results
     std::vector<int> brooklynIndices;
     std::vector<int> injuryCount10Indices;
-    //Use OpenMP to allocate a thread for each function
     auto startTimeA = std::chrono::high_resolution_clock::now();
     #pragma omp parallel sections
     {
@@ -63,12 +58,7 @@ int main() {
     }
     auto endTimeA = std::chrono::high_resolution_clock::now();
     auto durationA = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeA - startTimeA);
-    // std::cout << "Search started at: " << std::chrono::duration_cast<std::chrono::milliseconds>(startTime.time_since_epoch()).count() << " ms\n";
-    // std::cout << "Search ended at: " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime.time_since_epoch()).count() << " ms\n";
     std::cout << "Total time taken: " << durationA.count() << " ms\n";
 
     return 0;
 }
-
-// readData("/Users/dhruviljayani/Documents/assignments/sem - 2/CMPE - 275/minis/crash_data_processor(mini-1)/data/data.csv");
-// cmake -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ ..

@@ -6,7 +6,6 @@
 #include <stdexcept>
 
 CrashRecord::CrashRecord(const std::vector<std::string>& data) {
-    // Assume data has sufficient tokens. Add error checking if needed.
     crashDate = std::string(data[0]);
     crashTime = std::string(data[1]);
     borough   = std::string(data[2]);
@@ -15,7 +14,6 @@ CrashRecord::CrashRecord(const std::vector<std::string>& data) {
     try {
         numberOfPersonsInjured = data[10].empty() ? 0 : std::stoi(std::string(data[10]));
     } catch (const std::exception& e) {
-        // std::cerr << "Error parsing injury count (" << data[10] << "): " << e.what() << ". Setting to 0." << std::endl;
         numberOfPersonsInjured = 0;
     }
 }

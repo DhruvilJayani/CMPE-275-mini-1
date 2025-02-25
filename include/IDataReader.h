@@ -13,4 +13,4 @@ public:
     virtual CrashDataArrays readDataInArray(const std::string& filename) = 0;
 };
 
-#endif // IDATAREADER_H
+#endif 

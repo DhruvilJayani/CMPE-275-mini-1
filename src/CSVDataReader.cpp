@@ -63,27 +63,25 @@ std::vector<CrashRecord> CSVDataReader::readData(const std::string& filename) {
     }
 
     std::string line;
-    std::getline(file, line); // Skip header
+    std::getline(file, line); 
 
     std::vector<std::string> lines;
     while (std::getline(file, line)) {
         lines.push_back(line);
     }
 
-    // Resize the vector to hold the correct number of records
-    records.reserve(lines.size()); // Reserve memory, but don't initialize yet
+    records.reserve(lines.size());
 
-    // Parallelize the loop that processes the lines
     omp_set_num_threads(2);
     #pragma omp parallel for
     for (size_t i = 0; i < lines.size(); ++i) {
         std::vector<std::string> data = parseCSVLine(lines[i]);
-        CrashRecord record(data);  // Create a new CrashRecord using the parsed data
+        CrashRecord record(data);
 
-        // Use a critical section to assign the record back to the correct index
+        
         #pragma omp critical
         {
-            records.push_back(record);  // Instead of resizing, we use push_back
+            records.push_back(record);
         }
     }
 
@@ -102,7 +100,7 @@ CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
         return crashDataArrays;
     }
     
-    // Read entire file into memory
+    // Read entire file into memory. Earlier 10,000 Rows
     std::string content;
     file.seekg(0, std::ios::end);
     content.resize(file.tellg());
@@ -115,9 +113,8 @@ CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
     size_t start = 0, end = 0;
     while (end < content.size()) {
         if (content[end] == '\n' || content[end] == '\r') {
-            if (start < end) // Skip empty lines
+            if (start < end)
                 lines.emplace_back(content.substr(start, end - start));
-            // Handle CRLF
             if (content[end] == '\r' && end + 1 < content.size() && content[end+1] == '\n')
                 end += 2;
             else
@@ -127,23 +124,21 @@ CrashDataArrays CSVDataReader::readDataInArray(const std::string& filename) {
             end++;
         }
     }
-    if (start < end) // Add last line
+    if (start < end)
         lines.emplace_back(content.substr(start, end - start));
     
-    // Skip header
     if (!lines.empty())
         lines.erase(lines.begin());
     
-    // Pre-size arrays for direct access
     const size_t numRecords = lines.size();
     crashDataArrays.resize(numRecords);
     
     // Parallel parse with no locks
     #pragma omp parallel for
     for (size_t i = 0; i < numRecords; ++i) {
-        thread_local std::vector<std::string> fields; // Reuse buffer
+        thread_local std::vector<std::string> fields;
         fields.clear();
-        parseCSVLineA(lines[i], fields); // Optimized parser
+        parseCSVLineA(lines[i], fields);
         crashDataArrays.setRecord(i, fields);
     }
     
@@ -183,6 +178,6 @@ void parseCSVLineA(const std::string& line, std::vector<std::string>& fields) {
         prev_char = *current++;
     }
     
-    // Add last field
+    // Adding last field
     fields.emplace_back(start, current - start);
 }

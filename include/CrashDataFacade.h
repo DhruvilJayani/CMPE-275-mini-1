@@ -10,21 +10,21 @@
 
 class CrashDataFacade {
 public:
-    // The facade accepts any concrete IDataReader implementation.
+    
     CrashDataFacade(std::unique_ptr<IDataReader> reader);
 
-    // Load data from a file; returns true if successful.
+    
     bool loadData(const std::string& filename);
 
-    //Load data in array
+    
     bool loadDataInArray(const std::string& filename, CrashDataArrays& crashData);
 
-    // API for basic searching
+    
     std::vector<CrashRecord> searchByBorough(const std::string& borough) const;
     std::vector<CrashRecord> searchByDateRange(const std::string& startDate, const std::string& endDate) const;
     std::vector<CrashRecord> searchByInjuryCount(int minInjuryCount) const;
 
-    // Optionally, expose all loaded records
+    
     const std::vector<CrashRecord>& getRecords() const;
 
 private:
@@ -32,4 +32,4 @@ private:
     std::vector<CrashRecord> records;
 };
 
-#endif // CRASHDATAFACADE_H
+#endif 
